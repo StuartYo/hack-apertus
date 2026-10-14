@@ -1,8 +1,10 @@
 """PDF text extraction and chunking. Pure Python (pypdf), no model involved.
 
-Evidence quotes must be verbatim, so every chunk is a contiguous slice of the page text as
-pypdf returns it (line breaks kept). The official scorer normalises whitespace and words
-hyphenated across line breaks on both sides, so keeping the raw lines is the safest choice.
+Evidence quotes are taken from the PDF text, never written by a model. Each page's pypdf text
+is normalised first (NFKC, runs of spaces and tabs collapsed, lines stripped); a chunk is a
+run of consecutive non-empty lines of that normalised page, so blank lines are dropped but
+the remaining line breaks are kept. The official scorer normalises whitespace and words
+hyphenated across line breaks on both sides, so this light clean-up does not hurt matching.
 """
 
 from __future__ import annotations
@@ -21,7 +23,7 @@ from pypdf import PdfReader
 class Chunk:
     page: int  # 1-based PDF page number
     idx: int  # position of the chunk inside the page
-    text: str  # verbatim slice of the page text
+    text: str  # consecutive lines of the normalised page text
 
 
 def clean_page(text: str) -> str:

@@ -2,8 +2,9 @@
 
     python docs/build_report.py [--browser PATH]
 
-Run scripts/make_results.py first so the tables are current. Prints the page count; the
-challenge allows at most 6 pages.
+Run scripts/make_results.py first so the numbers are current. Prints the page count; the
+challenge allows at most 6 pages. The PDF metadata records a hash of its sources, so
+`make_results.py --check` can tell whether the committed PDF is current.
 """
 
 import argparse
@@ -15,13 +16,16 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
+from make_results import source_hash  # noqa: E402
 OUT = ROOT / "docs" / "BookletCheck_Report.pdf"
 CSS = """
 @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
 body { font-family: "Source Serif 4", Georgia, "Times New Roman", serif; font-size: 9.6pt; line-height: 1.38;
        color: #111; max-width: none; margin: 0; }
 h1 { font-size: 16pt; margin: 0 0 6pt; }
-h2 { font-size: 11.5pt; margin: 11pt 0 4pt; border-bottom: 0.6pt solid #999; padding-bottom: 1pt; }
+h2 { font-size: 11.5pt; margin: 11pt 0 4pt; border-bottom: 0.6pt solid #999; padding-bottom: 1pt;
+     break-after: avoid; page-break-after: avoid; }
 p, li { margin: 3pt 0; }
 ul { padding-left: 14pt; margin: 3pt 0; }
 code { font-family: Consolas, "DejaVu Sans Mono", monospace; font-size: 8.4pt; }
@@ -50,6 +54,7 @@ def main():
     args = ap.parse_args()
     md = (ROOT / "technical_report.md").read_text(encoding="utf-8")
     md = re.sub(r"<!-- [A-Z]+:(START|END) -->\n?", "", md)
+    md = re.sub(r"<!--/?n(?::\w+)?-->", "", md)  # inline number markers
     with tempfile.TemporaryDirectory() as tmp:
         src = Path(tmp) / "report.md"
         src.write_text(md, encoding="utf-8")
@@ -63,8 +68,13 @@ def main():
         subprocess.run([find_browser(args.browser), "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
                         f"--user-data-dir={Path(tmp) / 'profile'}", f"--print-to-pdf={OUT}", html.as_uri()],
                        check=True, capture_output=True)
-    from pypdf import PdfReader
+    from pypdf import PdfReader, PdfWriter
 
+    writer = PdfWriter(clone_from=str(OUT))
+    writer.add_metadata({"/Title": "booklet-check technical report", "/Author": "Hua-I Yu",
+                         "/SourceSHA256": source_hash()})
+    with OUT.open("wb") as f:
+        writer.write(f)
     pages = len(PdfReader(str(OUT)).pages)
     print(f"{OUT} ({pages} pages){' TOO LONG' if pages > 6 else ''}")
 

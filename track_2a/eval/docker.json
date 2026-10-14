@@ -1,0 +1,7 @@
+{
+ "source": "GitHub Actions run 38594214359 (ubuntu-24.04 hosted runner, fresh, no layer cache), commit 4e01458",
+ "ci_run_id": 38594214359,
+ "build_seconds": 21,
+ "image_size_bytes": 425353827,
+ "make_run_seconds_two_dry_cases": 5
+}

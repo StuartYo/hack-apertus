@@ -10,9 +10,11 @@ entailment / neutral / contradiction and, for task A, cites the booklet pages it
 
 How it works in one line: retrieval and evidence are plain code (PDF text extraction, a
 small multilingual embedding model baked into the Docker image, BM25), and Apertus v1.5
-only reads the few passages that matter and picks the label. Evidence quotes are verbatim
-slices of the PDF text with their real page numbers, so the model cannot invent a quote or
-a page.
+only reads the few passages that matter and picks the label. Evidence quotes are chunks of
+the PDF's pypdf text (NFKC-normalised, blank lines dropped) with their real page numbers, so
+the model cannot invent a quote or a page.
+
+Languages: German, French and Italian. Romansh is not supported and was not tested.
 
 ```bash
 cd track_2a

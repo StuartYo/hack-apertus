@@ -1,13 +1,15 @@
 """Case -> prediction. Retrieval and evidence are code; Apertus only picks the label.
 
-Task A (booklet PDF): extract pages, rank ~500-character verbatim chunks against the claim
-(multilingual embeddings + BM25 + vote-section prior), show the top chunks to Apertus and ask
-for one word. Evidence = the top chunks themselves, with their 1-based PDF page numbers, so a
+Task A (booklet PDF): extract pages, rank ~500-character chunks of the normalised pypdf text
+against the claim (multilingual embeddings + BM25 + vote-section prior), show the top chunks
+to Apertus and ask for one word. Evidence = the top chunks themselves, with their 1-based PDF page numbers, so a
 quote can never be invented and its page is always right.
 Task B (given reference): the same prompt on the reference text; long references are cut
 down to the most relevant chunks first.
-Neutral gate: when the best chunk is far from the claim (cosine below NEUTRAL_GATE), the case
-is labelled neutral without a model call. The threshold is fixed on the development split.
+Neutral gate: optional. When NEUTRAL_GATE is set and the best chunk is further from the claim
+than that cosine, the case is labelled neutral without a model call. It is off by default
+(NEUTRAL_GATE=-1) and was off in every reported run: neutral claims in the public data come
+from other votes, and a cut-off tuned on them would not carry over to same-vote neutrals.
 """
 
 from __future__ import annotations
@@ -25,10 +27,10 @@ from .pdf_index import BookletIndex, build_index, text_chunks
 LABELS = ["entailment", "neutral", "contradiction"]
 LANG = {"de": "German", "fr": "French", "it": "Italian", "en": "English", "rm": "Romansh"}
 
-TOP_K = int(os.environ.get("TOP_K", "4"))  # 4 vs 8 on dev: -0.013 macro-F1, -45% tokens
+TOP_K = int(os.environ.get("TOP_K", "4"))  # 4 vs 8 on dev: -0.013 macro-F1 (noise at n=150), -45% tokens
 EVIDENCE_ITEMS = 5
 REF_MAX_CHARS = int(os.environ.get("REF_MAX_CHARS", "2600"))
-NEUTRAL_GATE = float(os.environ.get("NEUTRAL_GATE", "-1"))  # -1 = gate off; set from dev split
+NEUTRAL_GATE = float(os.environ.get("NEUTRAL_GATE", "-1"))  # -1 = gate off (default, all reported runs)
 
 SYSTEM = ("You verify claims against the official Swiss federal voting booklet. "
           "Answer with exactly one word: entailment, contradiction, or neutral.")

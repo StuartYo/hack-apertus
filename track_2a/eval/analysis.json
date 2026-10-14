@@ -1,0 +1,173 @@
+{
+ "bootstrap": {
+  "resamples": 10000,
+  "seed": 0,
+  "interval": "95% percentile, paired"
+ },
+ "holdout60": {
+  "A": {
+   "cases": 60,
+   "correct": {
+    "baseline": 45,
+    "ours": 55
+   },
+   "ci95": {
+    "baseline": [
+     0.6159,
+     0.8411
+    ],
+    "ours": [
+     0.8373,
+     0.9811
+    ],
+    "ours_minus_baseline": [
+     0.0655,
+     0.3012
+    ]
+   },
+   "not_cut": {
+    "cases": 42,
+    "baseline": 31,
+    "ours": 40
+   },
+   "cut": {
+    "cases": 18,
+    "baseline": 14,
+    "ours": 15
+   }
+  },
+  "B": {
+   "cases": 60,
+   "correct": {
+    "baseline": 58,
+    "ours": 57
+   },
+   "ci95": {
+    "baseline": [
+     0.9122,
+     1.0
+    ],
+    "ours": [
+     0.8833,
+     1.0
+    ],
+    "ours_minus_baseline": [
+     -0.0579,
+     0.0033
+    ]
+   }
+  }
+ },
+ "holdout_pairs": {
+  "A": {
+   "de->de": {
+    "cases": 34,
+    "correct": 33,
+    "evidence_found": 22,
+    "evidence_cases": 25
+   },
+   "de->fr": {
+    "cases": 36,
+    "correct": 26,
+    "evidence_found": 17,
+    "evidence_cases": 27
+   },
+   "de->it": {
+    "cases": 40,
+    "correct": 29,
+    "evidence_found": 18,
+    "evidence_cases": 34
+   },
+   "fr->de": {
+    "cases": 55,
+    "correct": 55,
+    "evidence_found": 32,
+    "evidence_cases": 35
+   },
+   "fr->fr": {
+    "cases": 37,
+    "correct": 34,
+    "evidence_found": 22,
+    "evidence_cases": 24
+   },
+   "fr->it": {
+    "cases": 50,
+    "correct": 46,
+    "evidence_found": 33,
+    "evidence_cases": 37
+   },
+   "it->de": {
+    "cases": 47,
+    "correct": 37,
+    "evidence_found": 25,
+    "evidence_cases": 32
+   },
+   "it->fr": {
+    "cases": 37,
+    "correct": 36,
+    "evidence_found": 15,
+    "evidence_cases": 18
+   },
+   "it->it": {
+    "cases": 53,
+    "correct": 52,
+    "evidence_found": 25,
+    "evidence_cases": 28
+   }
+  },
+  "B": {
+   "de->de": {
+    "cases": 34,
+    "correct": 30
+   },
+   "de->fr": {
+    "cases": 36,
+    "correct": 32
+   },
+   "de->it": {
+    "cases": 40,
+    "correct": 36
+   },
+   "fr->de": {
+    "cases": 55,
+    "correct": 55
+   },
+   "fr->fr": {
+    "cases": 37,
+    "correct": 37
+   },
+   "fr->it": {
+    "cases": 50,
+    "correct": 49
+   },
+   "it->de": {
+    "cases": 47,
+    "correct": 44
+   },
+   "it->fr": {
+    "cases": 37,
+    "correct": 37
+   },
+   "it->it": {
+    "cases": 53,
+    "correct": 49
+   }
+  }
+ },
+ "dev_topk": {
+  "cases": 150,
+  "correct": {
+   "k4": 143,
+   "k6": 140,
+   "k8": 145
+  },
+  "ci95_k8_minus_k4": [
+   -0.0129,
+   0.0406
+  ],
+  "ci95_k4_minus_k6": [
+   -0.0184,
+   0.0621
+  ]
+ }
+}

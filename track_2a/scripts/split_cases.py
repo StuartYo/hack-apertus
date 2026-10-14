@@ -1,9 +1,10 @@
 """Cut the official prepare_cases.py output into the frozen dev / held-out split.
 
 Inputs are the files written by the starter's prepare_cases.py (all rows, both tasks,
-booklets downloaded). Row numbers come from data/split.json, which was frozen before any
-model was run. --sample N draws a label-stratified sample per task with a fixed seed, for
-runs that would otherwise cost too many tokens (the full-booklet baseline).
+booklets downloaded). Row numbers come from data/split.json, a deterministic split by vote
+date (hash rule in that file); no development run used a held-out row. --sample N draws a
+label-stratified sample per task with a fixed seed, for runs that would otherwise cost too
+many tokens (the full-booklet baseline). --ids keeps exactly the cases of a committed run.
 """
 
 import argparse
@@ -30,6 +31,7 @@ def main():
     ap.add_argument("--task", choices=["A", "B", "both"], default="both")
     ap.add_argument("--sample", type=int, help="cases per task, label-stratified")
     ap.add_argument("--seed", type=int, default=13)
+    ap.add_argument("--ids", help="jsonl file (cases or predictions) whose ids to keep, e.g. a committed run")
     ap.add_argument("--out-dir", required=True)
     args = ap.parse_args()
 
@@ -37,6 +39,9 @@ def main():
     gold = {e["id"]: e for e in read(args.expected)}
     cases = [c for c in read(args.cases) if row_of(c["id"]) in rows
              and (args.task == "both" or c["id"].endswith("-" + args.task))]
+    if args.ids:
+        keep = {r["id"] for r in read(args.ids)}
+        cases = [c for c in cases if c["id"] in keep]
     if args.sample:
         rng = random.Random(args.seed)
         picked = []

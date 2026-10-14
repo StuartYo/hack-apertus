@@ -19,7 +19,7 @@ def test_parse_label():
     assert pipeline.parse_label("I am not sure") is None
 
 
-def test_chunks_are_verbatim_slices():
+def test_chunks_are_slices_of_the_normalised_page():
     page = "Erste Zeile des Textes.\nZweite Zeile mit 1 000 Franken.\n\nNeuer Absatz hier, lang genug um zu bleiben."
     for piece in split_page(page, target=20, hard_max=60):
         assert piece in page
