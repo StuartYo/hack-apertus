@@ -112,19 +112,3 @@ def text_chunks(text: str, target: int = 500, hard_max: int = 900) -> list[Chunk
     """Chunk a plain reference text (task B). Page is None-like (0) for these chunks."""
     return [Chunk(page=0, idx=j, text=t) for j, t in enumerate(split_page(clean_page(text), target, hard_max))]
 
-
-def _junk(line: str) -> bool:
-    s = line.strip()
-    letters = sum(ch.isalpha() for ch in s)
-    return len(s) <= 3 or letters < 3 or (len(s) < 20 and not any(ch.islower() for ch in s))
-
-
-def trim_edges(text: str) -> str:
-    """Drop layout debris (page numbers, sidebar words, lone dashes) at the start and end of a
-    chunk, so the quote stays a contiguous slice of the page but carries no foreign text."""
-    lines = text.split("\n")
-    while len(lines) > 1 and _junk(lines[0]):
-        lines.pop(0)
-    while len(lines) > 1 and _junk(lines[-1]):
-        lines.pop()
-    return "\n".join(lines)

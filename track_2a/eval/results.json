@@ -170,7 +170,9 @@
    }
   },
   "note": "dev tuning run, TOP_K=6, section boost 0.3",
-  "at": "2026-10-14T22:49:06"
+  "at": "2026-10-14T22:49:06",
+  "retried_after_error": 0,
+  "truncated_cases": 0
  },
  {
   "tag": "devA150b-ours-8b-k8",
@@ -275,7 +277,9 @@
    }
   },
   "note": "dev ablation TOP_K=8 (evidence = top 5 chunks)",
-  "at": "2026-10-14T22:57:52"
+  "at": "2026-10-14T22:57:52",
+  "retried_after_error": 0,
+  "truncated_cases": 0
  },
  {
   "tag": "devA150b-ours-8b-k4",
@@ -380,7 +384,9 @@
    }
   },
   "note": "dev ablation TOP_K=4 (5 evidence items)",
-  "at": "2026-10-14T23:05:23"
+  "at": "2026-10-14T23:05:23",
+  "retried_after_error": 0,
+  "truncated_cases": 0
  },
  {
   "tag": "devA150b-ours-8b-k6",
@@ -486,6 +492,533 @@
    }
   },
   "note": "dev ablation TOP_K=6 (5 evidence items); 6 cases failed on a local DNS outage and count as wrong (retry-on-error was added after this run)",
-  "at": "2026-10-14T23:12:56"
+  "at": "2026-10-14T23:12:56",
+  "retried_after_error": 0,
+  "truncated_cases": 0
+ },
+ {
+  "tag": "holdout-ours-8b",
+  "system": "ours",
+  "model": "swiss-ai/apertus-v1.5-8b",
+  "dry": false,
+  "split": "holdout",
+  "cases": 778,
+  "wall_s": 595.3,
+  "usd": 0.06128,
+  "routes": {
+   "model": 778
+  },
+  "retried_after_error": 0,
+  "mean_per_case": {
+   "A": {
+    "input_tokens": 811.6169665809769,
+    "output_tokens": 3.2133676092544987,
+    "inference_time_ms": 4491.547557840617
+   },
+   "B": {
+    "input_tokens": 750.4601542416452,
+    "output_tokens": 3.352185089974293,
+    "inference_time_ms": 4639.881748071979
+   }
+  },
+  "score": {
+   "cases": 778,
+   "responses": 778,
+   "issues": {},
+   "tasks": {
+    "A": {
+     "cases": 389,
+     "macro_f1": 0.8953224989816623,
+     "threshold": 0.6,
+     "passes_threshold": true,
+     "accuracy": 0.8946015424164524,
+     "per_class": {
+      "entailment": {
+       "precision": 0.952755905511811,
+       "recall": 0.9603174603174603,
+       "f1": 0.9565217391304348,
+       "support": 126
+      },
+      "neutral": {
+       "precision": 0.7973856209150327,
+       "recall": 0.9457364341085271,
+       "f1": 0.8652482269503546,
+       "support": 129
+      },
+      "contradiction": {
+       "precision": 0.963302752293578,
+       "recall": 0.7835820895522388,
+       "f1": 0.8641975308641975,
+       "support": 134
+      }
+     },
+     "evidence_score": 0.8038461538461539,
+     "evidence": {
+      "cases": 260,
+      "found": 209,
+      "without_gold_passage": 0
+     }
+    },
+    "B": {
+     "cases": 389,
+     "macro_f1": 0.948844415915045,
+     "threshold": 0.7,
+     "passes_threshold": true,
+     "accuracy": 0.9485861182519281,
+     "per_class": {
+      "entailment": {
+       "precision": 0.9618320610687023,
+       "recall": 1.0,
+       "f1": 0.980544747081712,
+       "support": 126
+      },
+      "neutral": {
+       "precision": 0.9523809523809523,
+       "recall": 0.9302325581395349,
+       "f1": 0.9411764705882353,
+       "support": 129
+      },
+      "contradiction": {
+       "precision": 0.9318181818181818,
+       "recall": 0.917910447761194,
+       "f1": 0.924812030075188,
+       "support": 134
+      }
+     }
+    }
+   },
+   "languages": {
+    "A de->de": {
+     "cases": 34,
+     "macro_f1": 0.9679633867276888
+    },
+    "A de->fr": {
+     "cases": 36,
+     "macro_f1": 0.7246455505279035
+    },
+    "A de->it": {
+     "cases": 40,
+     "macro_f1": 0.7172463768115942
+    },
+    "A fr->de": {
+     "cases": 55,
+     "macro_f1": 1.0
+    },
+    "A fr->fr": {
+     "cases": 37,
+     "macro_f1": 0.9062962962962963
+    },
+    "A fr->it": {
+     "cases": 50,
+     "macro_f1": 0.9061513687600643
+    },
+    "A it->de": {
+     "cases": 47,
+     "macro_f1": 0.8031649831649831
+    },
+    "A it->fr": {
+     "cases": 37,
+     "macro_f1": 0.9755799755799757
+    },
+    "A it->it": {
+     "cases": 53,
+     "macro_f1": 0.9819697994140185
+    },
+    "B de->de": {
+     "cases": 34,
+     "macro_f1": 0.8732752360203341
+    },
+    "B de->fr": {
+     "cases": 36,
+     "macro_f1": 0.8839598997493735
+    },
+    "B de->it": {
+     "cases": 40,
+     "macro_f1": 0.884802043422733
+    },
+    "B fr->de": {
+     "cases": 55,
+     "macro_f1": 1.0
+    },
+    "B fr->fr": {
+     "cases": 37,
+     "macro_f1": 1.0
+    },
+    "B fr->it": {
+     "cases": 50,
+     "macro_f1": 0.9798639455782313
+    },
+    "B it->de": {
+     "cases": 47,
+     "macro_f1": 0.9385727190605239
+    },
+    "B it->fr": {
+     "cases": 37,
+     "macro_f1": 1.0
+    },
+    "B it->it": {
+     "cases": 53,
+     "macro_f1": 0.9317988064791134
+    }
+   },
+   "usage_mean_per_case": {
+    "input_tokens": 781.0385604113111,
+    "output_tokens": 3.282776349614396,
+    "inference_time_ms": 4565.714652956298
+   }
+  },
+  "note": "frozen v1 (commit 7b6d3a1), full held-out set",
+  "at": "2026-10-14T23:23:59",
+  "truncated_cases": 0
+ },
+ {
+  "tag": "holdout60-baseline-8b",
+  "system": "baseline",
+  "model": "swiss-ai/apertus-v1.5-8b",
+  "dry": false,
+  "split": "holdout60",
+  "cases": 120,
+  "wall_s": 402.1,
+  "usd": 0.24506,
+  "routes": {
+   "model": 120
+  },
+  "retried_after_error": 0,
+  "mean_per_case": {
+   "A": {
+    "input_tokens": 38574.48333333333,
+    "output_tokens": 43.916666666666664,
+    "inference_time_ms": 13999.05
+   },
+   "B": {
+    "input_tokens": 2095.5833333333335,
+    "output_tokens": 43.0,
+    "inference_time_ms": 5847.85
+   }
+  },
+  "score": {
+   "cases": 120,
+   "responses": 120,
+   "issues": {},
+   "tasks": {
+    "A": {
+     "cases": 60,
+     "macro_f1": 0.7374800110283982,
+     "threshold": 0.6,
+     "passes_threshold": true,
+     "accuracy": 0.75,
+     "per_class": {
+      "entailment": {
+       "precision": 0.8947368421052632,
+       "recall": 0.85,
+       "f1": 0.8717948717948718,
+       "support": 20
+      },
+      "neutral": {
+       "precision": 0.6333333333333333,
+       "recall": 0.95,
+       "f1": 0.76,
+       "support": 20
+      },
+      "contradiction": {
+       "precision": 0.8181818181818182,
+       "recall": 0.45,
+       "f1": 0.5806451612903226,
+       "support": 20
+      }
+     },
+     "evidence_score": 0.275,
+     "evidence": {
+      "cases": 40,
+      "found": 11,
+      "without_gold_passage": 0
+     }
+    },
+    "B": {
+     "cases": 60,
+     "macro_f1": 0.9665831244778613,
+     "threshold": 0.7,
+     "passes_threshold": true,
+     "accuracy": 0.9666666666666667,
+     "per_class": {
+      "entailment": {
+       "precision": 0.9090909090909091,
+       "recall": 1.0,
+       "f1": 0.9523809523809523,
+       "support": 20
+      },
+      "neutral": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 20
+      },
+      "contradiction": {
+       "precision": 1.0,
+       "recall": 0.9,
+       "f1": 0.9473684210526315,
+       "support": 20
+      }
+     }
+    }
+   },
+   "languages": {
+    "A de->de": {
+     "cases": 4,
+     "macro_f1": 0.7333333333333334
+    },
+    "A de->fr": {
+     "cases": 4,
+     "macro_f1": 0.3333333333333333
+    },
+    "A de->it": {
+     "cases": 8,
+     "macro_f1": 0.38888888888888884
+    },
+    "A fr->de": {
+     "cases": 9,
+     "macro_f1": 0.6571428571428571
+    },
+    "A fr->fr": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "A fr->it": {
+     "cases": 10,
+     "macro_f1": 0.8055555555555555
+    },
+    "A it->de": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "A it->fr": {
+     "cases": 2,
+     "macro_f1": 0.3333333333333333
+    },
+    "A it->it": {
+     "cases": 13,
+     "macro_f1": 0.903030303030303
+    },
+    "B de->de": {
+     "cases": 3,
+     "macro_f1": 1.0
+    },
+    "B de->fr": {
+     "cases": 5,
+     "macro_f1": 0.375
+    },
+    "B de->it": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "B fr->de": {
+     "cases": 6,
+     "macro_f1": 1.0
+    },
+    "B fr->fr": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "B fr->it": {
+     "cases": 10,
+     "macro_f1": 1.0
+    },
+    "B it->de": {
+     "cases": 7,
+     "macro_f1": 1.0
+    },
+    "B it->fr": {
+     "cases": 4,
+     "macro_f1": 1.0
+    },
+    "B it->it": {
+     "cases": 15,
+     "macro_f1": 1.0
+    }
+   },
+   "usage_mean_per_case": {
+    "input_tokens": 20335.033333333333,
+    "output_tokens": 43.458333333333336,
+    "inference_time_ms": 9923.45
+   }
+  },
+  "note": "pure Apertus: whole booklet in the prompt (cut at 180k chars), model gives label+page+quote; same 120-case label-balanced held-out sample",
+  "at": "2026-10-14T23:31:25",
+  "truncated_cases": 18
+ },
+ {
+  "tag": "holdout60-ours-8b",
+  "system": "ours",
+  "model": "swiss-ai/apertus-v1.5-8b",
+  "dry": false,
+  "split": "holdout60",
+  "cases": 120,
+  "wall_s": 184.9,
+  "usd": 0.00999,
+  "routes": {
+   "model": 120
+  },
+  "retried_after_error": 1,
+  "mean_per_case": {
+   "A": {
+    "input_tokens": 821.2833333333333,
+    "output_tokens": 3.3,
+    "inference_time_ms": 10074.8
+   },
+   "B": {
+    "input_tokens": 829.9666666666667,
+    "output_tokens": 3.3333333333333335,
+    "inference_time_ms": 6266.833333333333
+   }
+  },
+  "score": {
+   "cases": 120,
+   "responses": 120,
+   "issues": {},
+   "tasks": {
+    "A": {
+     "cases": 60,
+     "macro_f1": 0.9166145507608922,
+     "threshold": 0.6,
+     "passes_threshold": true,
+     "accuracy": 0.9166666666666666,
+     "per_class": {
+      "entailment": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 20
+      },
+      "neutral": {
+       "precision": 0.8571428571428571,
+       "recall": 0.9,
+       "f1": 0.8780487804878049,
+       "support": 20
+      },
+      "contradiction": {
+       "precision": 0.8947368421052632,
+       "recall": 0.85,
+       "f1": 0.8717948717948718,
+       "support": 20
+      }
+     },
+     "evidence_score": 0.9,
+     "evidence": {
+      "cases": 40,
+      "found": 36,
+      "without_gold_passage": 0
+     }
+    },
+    "B": {
+     "cases": 60,
+     "macro_f1": 0.9495622263914947,
+     "threshold": 0.7,
+     "passes_threshold": true,
+     "accuracy": 0.95,
+     "per_class": {
+      "entailment": {
+       "precision": 0.9523809523809523,
+       "recall": 1.0,
+       "f1": 0.975609756097561,
+       "support": 20
+      },
+      "neutral": {
+       "precision": 0.95,
+       "recall": 0.95,
+       "f1": 0.95,
+       "support": 20
+      },
+      "contradiction": {
+       "precision": 0.9473684210526315,
+       "recall": 0.9,
+       "f1": 0.9230769230769231,
+       "support": 20
+      }
+     }
+    }
+   },
+   "languages": {
+    "A de->de": {
+     "cases": 4,
+     "macro_f1": 1.0
+    },
+    "A de->fr": {
+     "cases": 4,
+     "macro_f1": 1.0
+    },
+    "A de->it": {
+     "cases": 8,
+     "macro_f1": 0.6
+    },
+    "A fr->de": {
+     "cases": 9,
+     "macro_f1": 1.0
+    },
+    "A fr->fr": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "A fr->it": {
+     "cases": 10,
+     "macro_f1": 1.0
+    },
+    "A it->de": {
+     "cases": 5,
+     "macro_f1": 0.7777777777777777
+    },
+    "A it->fr": {
+     "cases": 2,
+     "macro_f1": 0.3333333333333333
+    },
+    "A it->it": {
+     "cases": 13,
+     "macro_f1": 0.9153439153439153
+    },
+    "B de->de": {
+     "cases": 3,
+     "macro_f1": 1.0
+    },
+    "B de->fr": {
+     "cases": 5,
+     "macro_f1": 0.25
+    },
+    "B de->it": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "B fr->de": {
+     "cases": 6,
+     "macro_f1": 1.0
+    },
+    "B fr->fr": {
+     "cases": 5,
+     "macro_f1": 1.0
+    },
+    "B fr->it": {
+     "cases": 10,
+     "macro_f1": 1.0
+    },
+    "B it->de": {
+     "cases": 7,
+     "macro_f1": 1.0
+    },
+    "B it->fr": {
+     "cases": 4,
+     "macro_f1": 1.0
+    },
+    "B it->it": {
+     "cases": 15,
+     "macro_f1": 0.903030303030303
+    }
+   },
+   "usage_mean_per_case": {
+    "input_tokens": 825.625,
+    "output_tokens": 3.316666666666667,
+    "inference_time_ms": 8170.816666666667
+   }
+  },
+  "note": "frozen v1 on the baseline sample",
+  "at": "2026-10-14T23:34:34",
+  "truncated_cases": 0
  }
 ]

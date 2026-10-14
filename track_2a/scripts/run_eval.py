@@ -90,7 +90,8 @@ def main():
                               for k in ("input_tokens", "output_tokens", "inference_time_ms")}
     record = {"tag": args.tag, "system": args.system, "model": llm.model, "dry": llm.dry,
               "split": args.split_dir.name, "cases": len(cases), "wall_s": round(wall, 1),
-              "usd": round(llm.spent() - spent0, 5), "routes": routes, "retried_after_error": retried, "mean_per_case": per_task,
+              "usd": round(llm.spent() - spent0, 5), "routes": routes, "retried_after_error": retried,
+              "truncated_cases": sum(1 for r in results if r.get("_trace", {}).get("truncated")), "mean_per_case": per_task,
               "score": score, "note": args.note, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
     res_path = ROOT / "eval" / "results.json"
     allres = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else []

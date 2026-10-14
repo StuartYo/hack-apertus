@@ -83,14 +83,15 @@ class Apertus:
             ids = [m["id"] for m in self._request("/models", None, timeout=30).get("data", [])]
         except Exception:
             return DEFAULT_MODEL
-        low = {i.lower(): i for i in ids}
-        for want in ("apertus-v1.5-8b", "apertus-1.5-8b"):
-            for li, i in low.items():
-                if want in li and "thinking" not in li:
-                    return i
-        for li, i in low.items():
-            if "apertus" in li and "8b" in li and "thinking" not in li:
-                return i
+        # Only Apertus v1.5 is allowed; prefer it explicitly, then the 8B size, never "thinking".
+        cands = [i for i in ids if "apertus" in i.lower() and "thinking" not in i.lower()]
+        if cands:
+            def score(i: str) -> tuple:
+                li = i.lower()
+                return ("1.5" in li or "v1_5" in li or "1-5" in li, "8b" in li, "instruct" in li)
+            best = max(cands, key=score)
+            if score(best)[0]:
+                return best
         return DEFAULT_MODEL
 
     def price(self) -> tuple[float, float]:

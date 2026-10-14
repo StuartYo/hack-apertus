@@ -42,9 +42,12 @@ def render(results):
     ]
     lines += [row(r) for r in results]
     lines += ["", "Thresholds for a valid submission: task A macro-F1 >= 0.60, task B macro-F1 >= 0.70.",
-              "Seconds per case are wall time per case including queueing behind 4 parallel workers on a",
+              "Seconds per case are wall time per case including queueing behind 3 to 6 parallel workers on a",
               "public endpoint, so they are only comparable within one table row set.", ""]
-    notes = [f"- `{r['tag']}`: {r['note']}" for r in results if r.get("note")]
+    notes = [f"- `{r['tag']}`: {r['note']}"
+             + (f" ({r['truncated_cases']} booklets cut to fit the context)" if r.get("truncated_cases") else "")
+             + (f" ({r['retried_after_error']} case(s) retried once after a transient network error)" if r.get("retried_after_error") else "")
+             for r in results if r.get("note")]
     if notes:
         lines += ["Notes:", ""] + notes + [""]
     return "\n".join(lines)
@@ -80,6 +83,9 @@ def report_parts(results):
                              f"{base['mean_per_case']['A']['input_tokens']:,.0f} input tokens per case, "
                              f"against {pa['macro_f1']:.3f} (evidence {fmt(pa.get('evidence_score'))}) with "
                              f"{pair['mean_per_case']['A']['input_tokens']:,.0f} for ours.")
+                if base.get("truncated_cases"):
+                    headline += (f" In {base['truncated_cases']} of those {ba['cases']} baseline cases the booklet did "
+                                 f"not fit the context and was cut at 180,000 characters.")
     return table, headline
 
 

@@ -7,17 +7,24 @@ predictions. Splits are by vote date and were frozen in `data/split.json` before
 
 | run | system | model | cases A / B | A macro-F1 | A evidence | B macro-F1 | input tokens per case A / B | seconds per case A / B | USD |
 |---|---|---|---|---|---|---|---|---|---|
-| `dev-smoke-ours` | ours | apertus-v1.5-8b | 6 / 6 | 0.822 | 0.500 | 1.000 | 933 / 649 | 17.1 / 9.2 | 0.0010 |
 | `dev150-ours-8b-v1` | ours | apertus-v1.5-8b | 150 / 150 | 0.886 | 0.770 | 0.980 | 1,117 / 723 | 7.6 / 6.2 | 0.0278 |
 | `devA150b-ours-8b-k8` | ours | apertus-v1.5-8b | 150 / 0 | 0.966 | 0.830 | n/a | 1,435 / 0 | 10.3 / 0.0 | 0.0216 |
 | `devA150b-ours-8b-k4` | ours | apertus-v1.5-8b | 150 / 0 | 0.953 | 0.830 | n/a | 788 / 0 | 12.5 / 0.0 | 0.0119 |
+| `devA150b-ours-8b-k6` | ours | apertus-v1.5-8b | 150 / 0 | 0.932 | 0.790 | n/a | 1,064 / 0 | 13.6 / 0.0 | 0.0161 |
+| `holdout-ours-8b` | ours | apertus-v1.5-8b | 389 / 389 | 0.895 | 0.804 | 0.949 | 812 / 750 | 4.5 / 4.6 | 0.0613 |
+| `holdout60-baseline-8b` | baseline | apertus-v1.5-8b | 60 / 60 | 0.737 | 0.275 | 0.967 | 38,574 / 2,096 | 14.0 / 5.8 | 0.2451 |
+| `holdout60-ours-8b` | ours | apertus-v1.5-8b | 60 / 60 | 0.917 | 0.900 | 0.950 | 821 / 830 | 10.1 / 6.3 | 0.0100 |
 
 Thresholds for a valid submission: task A macro-F1 >= 0.60, task B macro-F1 >= 0.70.
-Seconds per case are wall time per case including queueing behind 4 parallel workers on a
+Seconds per case are wall time per case including queueing behind 3 to 6 parallel workers on a
 public endpoint, so they are only comparable within one table row set.
 
 Notes:
 
-- `dev150-ours-8b-v1`: dev tuning run, prompt v1, section boost 0.3
-- `devA150b-ours-8b-k8`: dev ablation TOP_K=8
+- `dev150-ours-8b-v1`: dev tuning run, TOP_K=6, section boost 0.3
+- `devA150b-ours-8b-k8`: dev ablation TOP_K=8 (evidence = top 5 chunks)
 - `devA150b-ours-8b-k4`: dev ablation TOP_K=4 (5 evidence items)
+- `devA150b-ours-8b-k6`: dev ablation TOP_K=6 (5 evidence items); 6 cases failed on a local DNS outage and count as wrong (retry-on-error was added after this run)
+- `holdout-ours-8b`: frozen v1 (commit 7b6d3a1), full held-out set
+- `holdout60-baseline-8b`: pure Apertus: whole booklet in the prompt (cut at 180k chars), model gives label+page+quote; same 120-case label-balanced held-out sample (18 booklets cut to fit the context)
+- `holdout60-ours-8b`: frozen v1 on the baseline sample (1 case(s) retried once after a transient network error)

@@ -20,6 +20,8 @@ jobs:
         run: |
           pip install -r requirements-dev.txt
           python -m pytest -q tests
+      - name: Every reported number comes from eval/results.json
+        run: python scripts/make_results.py --check
       - name: make run (Docker, linux/amd64, CPU, DRY MODE because no key is configured)
         run: make run 2> run.log; cat run.log
       - name: Check output contract and that the embedding model loaded offline

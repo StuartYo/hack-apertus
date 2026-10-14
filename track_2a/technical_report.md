@@ -21,7 +21,7 @@ themselves, with the page they were cut from, so a quote can never be invented a
 is always right.
 
 <!-- HEADLINE:START -->
-_pending_
+On the 5 held-out vote dates (389 task A and 389 task B cases), apertus-v1.5-8b with booklet-check reaches macro-F1 0.895 on task A (evidence score 0.804) and 0.949 on task B, with 812 input tokens per task A case. On the same 60-case sample, the whole-booklet baseline scores 0.737 (evidence 0.275) with 38,574 input tokens per case, against 0.917 (evidence 0.900) with 821 for ours. In 18 of those 60 baseline cases the booklet did not fit the context and was cut at 180,000 characters.
 <!-- HEADLINE:END -->
 
 ## 2. Architecture
@@ -77,9 +77,8 @@ still help, which is why both are combined.
 118 MB) for retrieval. It never sees a label and never produces text; it only orders the
 chunks. It is downloaded when the Docker image is built (pinned revision, sha256 checked) and
 read from disk at run time; a CI step runs the image with networking disabled. We also tried
-`multilingual-e5-small` and `multilingual-e5-base`; neither found more gold passages on the
-development split (0.650 and 0.694 vs 0.688 before the section prior), so the smallest model
-stayed. No other model was used as a judge.
+`multilingual-e5-small` and `multilingual-e5-base` in the same slot; on the development split
+neither found clearly more gold passages, so the smallest and fastest model stayed. No other model was used as a judge.
 
 ## 4. Data
 
@@ -110,7 +109,11 @@ Because of the credit available, the baseline was run on a label-balanced sample
 held-out set; our system was run on the same sample and on the full held-out set.
 
 <!-- RESULTS:START -->
-_No held-out run recorded yet._
+| run | system | model | cases A / B | A macro-F1 | A evidence | B macro-F1 | input tokens per case A / B | seconds per case A / B | USD |
+|---|---|---|---|---|---|---|---|---|---|
+| `holdout-ours-8b` | ours | apertus-v1.5-8b | 389 / 389 | 0.895 | 0.804 | 0.949 | 812 / 750 | 4.5 / 4.6 | 0.0613 |
+| `holdout60-baseline-8b` | baseline | apertus-v1.5-8b | 60 / 60 | 0.737 | 0.275 | 0.967 | 38,574 / 2,096 | 14.0 / 5.8 | 0.2451 |
+| `holdout60-ours-8b` | ours | apertus-v1.5-8b | 60 / 60 | 0.917 | 0.900 | 0.950 | 821 / 830 | 10.1 / 6.3 | 0.0100 |
 <!-- RESULTS:END -->
 
 ## 6. Limitations
