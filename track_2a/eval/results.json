@@ -1,0 +1,313 @@
+[
+ {
+  "tag": "dev-smoke-ours",
+  "system": "ours",
+  "model": "swiss-ai/apertus-v1.5-8b",
+  "dry": false,
+  "split": "dev_smoke",
+  "cases": 12,
+  "wall_s": 56.6,
+  "usd": 0.00096,
+  "routes": {
+   "error": 1,
+   "model": 11
+  },
+  "mean_per_case": {
+   "A": {
+    "input_tokens": 933.3333333333334,
+    "output_tokens": 2.6666666666666665,
+    "inference_time_ms": 17090.333333333332
+   },
+   "B": {
+    "input_tokens": 649.3333333333334,
+    "output_tokens": 3.3333333333333335,
+    "inference_time_ms": 9218.833333333334
+   }
+  },
+  "score": {
+   "cases": 12,
+   "responses": 12,
+   "issues": {},
+   "tasks": {
+    "A": {
+     "cases": 6,
+     "macro_f1": 0.8222222222222223,
+     "threshold": 0.6,
+     "passes_threshold": true,
+     "accuracy": 0.8333333333333334,
+     "per_class": {
+      "entailment": {
+       "precision": 1.0,
+       "recall": 0.5,
+       "f1": 0.6666666666666666,
+       "support": 2
+      },
+      "neutral": {
+       "precision": 0.6666666666666666,
+       "recall": 1.0,
+       "f1": 0.8,
+       "support": 2
+      },
+      "contradiction": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 2
+      }
+     },
+     "evidence_score": 0.5,
+     "evidence": {
+      "cases": 4,
+      "found": 2,
+      "without_gold_passage": 0
+     }
+    },
+    "B": {
+     "cases": 6,
+     "macro_f1": 1.0,
+     "threshold": 0.7,
+     "passes_threshold": true,
+     "accuracy": 1.0,
+     "per_class": {
+      "entailment": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 2
+      },
+      "neutral": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 2
+      },
+      "contradiction": {
+       "precision": 1.0,
+       "recall": 1.0,
+       "f1": 1.0,
+       "support": 2
+      }
+     }
+    }
+   },
+   "languages": {
+    "A de->de": {
+     "cases": 1,
+     "macro_f1": 1.0
+    },
+    "A it->de": {
+     "cases": 1,
+     "macro_f1": 1.0
+    },
+    "A it->fr": {
+     "cases": 2,
+     "macro_f1": 0.3333333333333333
+    },
+    "A it->it": {
+     "cases": 2,
+     "macro_f1": 1.0
+    },
+    "B de->fr": {
+     "cases": 1,
+     "macro_f1": 1.0
+    },
+    "B de->it": {
+     "cases": 1,
+     "macro_f1": 1.0
+    },
+    "B fr->de": {
+     "cases": 1,
+     "macro_f1": 1.0
+    },
+    "B fr->it": {
+     "cases": 2,
+     "macro_f1": 1.0
+    },
+    "B it->de": {
+     "cases": 1,
+     "macro_f1": 1.0
+    }
+   },
+   "usage_mean_per_case": {
+    "input_tokens": 791.3333333333334,
+    "output_tokens": 3.0,
+    "inference_time_ms": 13154.583333333334
+   }
+  },
+  "note": "",
+  "at": "2026-10-14T22:04:52"
+ },
+ {
+  "tag": "dev150-ours-8b-v1",
+  "system": "ours",
+  "model": "swiss-ai/apertus-v1.5-8b",
+  "dry": false,
+  "split": "dev150",
+  "cases": 300,
+  "wall_s": 345.4,
+  "usd": 0.0278,
+  "routes": {
+   "model": 300
+  },
+  "mean_per_case": {
+   "A": {
+    "input_tokens": 1117.2266666666667,
+    "output_tokens": 3.32,
+    "inference_time_ms": 7582.0
+   },
+   "B": {
+    "input_tokens": 722.74,
+    "output_tokens": 3.36,
+    "inference_time_ms": 6213.7733333333335
+   }
+  },
+  "score": {
+   "cases": 300,
+   "responses": 300,
+   "issues": {},
+   "tasks": {
+    "A": {
+     "cases": 150,
+     "macro_f1": 0.8859590449336195,
+     "threshold": 0.6,
+     "passes_threshold": true,
+     "accuracy": 0.8866666666666667,
+     "per_class": {
+      "entailment": {
+       "precision": 0.8867924528301887,
+       "recall": 0.94,
+       "f1": 0.912621359223301,
+       "support": 50
+      },
+      "neutral": {
+       "precision": 0.8823529411764706,
+       "recall": 0.9,
+       "f1": 0.8910891089108911,
+       "support": 50
+      },
+      "contradiction": {
+       "precision": 0.8913043478260869,
+       "recall": 0.82,
+       "f1": 0.8541666666666666,
+       "support": 50
+      }
+     },
+     "evidence_score": 0.77,
+     "evidence": {
+      "cases": 100,
+      "found": 77,
+      "without_gold_passage": 0
+     }
+    },
+    "B": {
+     "cases": 150,
+     "macro_f1": 0.9799959587795515,
+     "threshold": 0.7,
+     "passes_threshold": true,
+     "accuracy": 0.98,
+     "per_class": {
+      "entailment": {
+       "precision": 0.9803921568627451,
+       "recall": 1.0,
+       "f1": 0.9900990099009901,
+       "support": 50
+      },
+      "neutral": {
+       "precision": 1.0,
+       "recall": 0.96,
+       "f1": 0.9795918367346939,
+       "support": 50
+      },
+      "contradiction": {
+       "precision": 0.9607843137254902,
+       "recall": 0.98,
+       "f1": 0.9702970297029703,
+       "support": 50
+      }
+     }
+    }
+   },
+   "languages": {
+    "A de->de": {
+     "cases": 18,
+     "macro_f1": 1.0
+    },
+    "A de->fr": {
+     "cases": 18,
+     "macro_f1": 0.6031746031746031
+    },
+    "A de->it": {
+     "cases": 18,
+     "macro_f1": 0.8825396825396825
+    },
+    "A fr->de": {
+     "cases": 17,
+     "macro_f1": 0.8053872053872054
+    },
+    "A fr->fr": {
+     "cases": 17,
+     "macro_f1": 0.8850408850408851
+    },
+    "A fr->it": {
+     "cases": 22,
+     "macro_f1": 0.9249999999999999
+    },
+    "A it->de": {
+     "cases": 13,
+     "macro_f1": 0.8387445887445888
+    },
+    "A it->fr": {
+     "cases": 13,
+     "macro_f1": 0.6444444444444445
+    },
+    "A it->it": {
+     "cases": 14,
+     "macro_f1": 1.0
+    },
+    "B de->de": {
+     "cases": 21,
+     "macro_f1": 1.0
+    },
+    "B de->fr": {
+     "cases": 20,
+     "macro_f1": 0.9327731092436974
+    },
+    "B de->it": {
+     "cases": 8,
+     "macro_f1": 1.0
+    },
+    "B fr->de": {
+     "cases": 16,
+     "macro_f1": 1.0
+    },
+    "B fr->fr": {
+     "cases": 18,
+     "macro_f1": 1.0
+    },
+    "B fr->it": {
+     "cases": 19,
+     "macro_f1": 1.0
+    },
+    "B it->de": {
+     "cases": 16,
+     "macro_f1": 1.0
+    },
+    "B it->fr": {
+     "cases": 21,
+     "macro_f1": 1.0
+    },
+    "B it->it": {
+     "cases": 11,
+     "macro_f1": 0.5833333333333334
+    }
+   },
+   "usage_mean_per_case": {
+    "input_tokens": 919.9833333333333,
+    "output_tokens": 3.34,
+    "inference_time_ms": 6897.886666666666
+   }
+  },
+  "note": "dev tuning run, prompt v1, section boost 0.3",
+  "at": "2026-10-14T22:49:06"
+ }
+]

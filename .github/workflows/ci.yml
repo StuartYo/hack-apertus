@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-and-run:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: track_2a
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: |
+          pip install -r requirements-dev.txt
+          python -m pytest -q tests
+      - name: make run (Docker, linux/amd64, CPU, DRY MODE because no key is configured)
+        run: make run 2> run.log; cat run.log
+      - name: Check output contract and that the embedding model loaded offline
+        run: |
+          ! grep -q "embedding model unavailable" run.log
+          grep -q "DRY MODE" run.log
+          python - <<'PY'
+          import json
+          cases = [json.loads(l) for l in open("data/examples/cases.jsonl", encoding="utf-8")]
+          preds = [json.loads(l) for l in open("output/predictions.jsonl", encoding="utf-8")]
+          assert [p["id"] for p in preds] == [c["id"] for c in cases], "ids"
+          names = ["entailment", "neutral", "contradiction"]
+          for p in preds:
+              assert p["label_name"] == names[p["label"]]
+              assert all(isinstance(p["metrics"][k], int) for k in ("input_tokens", "output_tokens", "inference_time_ms"))
+          print("output contract ok:", [(p["id"], p["label_name"], len(p["evidence"])) for p in preds])
+          PY
+      - name: Image runs with the network disabled (no runtime downloads)
+        run: |
+          docker run --rm --network none -v "$PWD/data/examples:/data:ro" -v "$PWD/output:/output" \
+            booklet-check:latest --input /data/cases.jsonl --output /output/offline.jsonl 2> offline.log
+          cat offline.log
+          ! grep -q "embedding model unavailable" offline.log
+          test "$(wc -l < output/offline.jsonl)" -eq 2

@@ -1,0 +1,5 @@
+# Runtime dependencies of the image (CPU only, no torch).
+numpy==2.4.6
+onnxruntime==1.28.0
+tokenizers==0.22.2
+pypdf==6.14.2
