@@ -31,10 +31,7 @@ jobs:
           echo "image_build_seconds=$build_s"
           echo "image_size_bytes=$size"
           docker image ls booklet-check:latest
-          printf '### Docker image
-- cold build: %s s
-- size: %s bytes
-' "$build_s" "$size" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Docker image: cold build $build_s s, size $size bytes" >> "$GITHUB_STEP_SUMMARY"
       - name: make run (Docker, linux/amd64, CPU, DRY MODE because no key is configured)
         run: |
           start=$(date +%s)
