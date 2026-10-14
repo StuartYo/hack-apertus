@@ -22,8 +22,24 @@ jobs:
           python -m pytest -q tests
       - name: Every reported number comes from eval/results.json
         run: python scripts/make_results.py --check
+      - name: Build the image (timed, no layer cache) and print its size
+        run: |
+          start=$(date +%s)
+          make build
+          build_s=$(( $(date +%s) - start ))
+          size=$(docker image inspect booklet-check:latest --format '{{.Size}}')
+          echo "image_build_seconds=$build_s"
+          echo "image_size_bytes=$size"
+          docker image ls booklet-check:latest
+          printf '### Docker image
+- cold build: %s s
+- size: %s bytes
+' "$build_s" "$size" >> "$GITHUB_STEP_SUMMARY"
       - name: make run (Docker, linux/amd64, CPU, DRY MODE because no key is configured)
-        run: make run 2> run.log; cat run.log
+        run: |
+          start=$(date +%s)
+          make run 2> run.log; cat run.log
+          echo "make_run_seconds_two_dry_cases=$(( $(date +%s) - start ))"
       - name: Check output contract and that the embedding model loaded offline
         run: |
           if grep -q "embedding model unavailable" run.log; then echo "embedding model did not load"; exit 1; fi
