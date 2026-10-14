@@ -25,7 +25,7 @@ from .pdf_index import BookletIndex, build_index, text_chunks
 LABELS = ["entailment", "neutral", "contradiction"]
 LANG = {"de": "German", "fr": "French", "it": "Italian", "en": "English", "rm": "Romansh"}
 
-TOP_K = int(os.environ.get("TOP_K", "6"))
+TOP_K = int(os.environ.get("TOP_K", "4"))  # 4 vs 8 on dev: -0.013 macro-F1, -45% tokens
 EVIDENCE_ITEMS = 5
 REF_MAX_CHARS = int(os.environ.get("REF_MAX_CHARS", "2600"))
 NEUTRAL_GATE = float(os.environ.get("NEUTRAL_GATE", "-1"))  # -1 = gate off; set from dev split
@@ -85,8 +85,8 @@ class Predictor:
         if "booklet" in case:
             idx = self.index(case["booklet"]["path"])
             src_lang = case["booklet"].get("language", "")
-            top, diag = retrieve.rank(idx.chunks, claim, vote, idx.pages, k=TOP_K)
-            passages = [f"[p. {c.page}] {c.text}" for c, _ in top]
+            top, diag = retrieve.rank(idx.chunks, claim, vote, idx.pages, k=max(TOP_K, EVIDENCE_ITEMS))
+            passages = [f"[p. {c.page}] {c.text}" for c, _ in top[:TOP_K]]
             evidence = [{"page": c.page, "text": c.text} for c, _ in top[:EVIDENCE_ITEMS]]
         else:
             ref = case["reference"]["text"]

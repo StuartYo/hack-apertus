@@ -55,6 +55,14 @@ def main():
     t0 = time.time()
     with ThreadPoolExecutor(args.workers) as ex:
         results = list(ex.map(fn, cases))
+    # Transient network failures (DNS, 429 storms) become neutral answers; retry those cases
+    # once, sequentially, so a local outage does not end up in the scores.
+    retried = 0
+    for i, r in enumerate(results):
+        if r.get("_trace", {}).get("route") == "error":
+            time.sleep(5)
+            results[i] = fn(cases[i])
+            retried += 1
     wall = time.time() - t0
 
     out = ROOT / "eval" / "runs" / args.tag
@@ -82,7 +90,7 @@ def main():
                               for k in ("input_tokens", "output_tokens", "inference_time_ms")}
     record = {"tag": args.tag, "system": args.system, "model": llm.model, "dry": llm.dry,
               "split": args.split_dir.name, "cases": len(cases), "wall_s": round(wall, 1),
-              "usd": round(llm.spent() - spent0, 5), "routes": routes, "mean_per_case": per_task,
+              "usd": round(llm.spent() - spent0, 5), "routes": routes, "retried_after_error": retried, "mean_per_case": per_task,
               "score": score, "note": args.note, "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
     res_path = ROOT / "eval" / "results.json"
     allres = json.loads(res_path.read_text(encoding="utf-8")) if res_path.exists() else []

@@ -50,6 +50,39 @@ def render(results):
     return "\n".join(lines)
 
 
+def fill(text: str, marker: str, body: str) -> str:
+    a, b = f"<!-- {marker}:START -->", f"<!-- {marker}:END -->"
+    i, j = text.index(a) + len(a), text.index(b)
+    return text[:i] + "\n" + body.strip() + "\n" + text[j:]
+
+
+def report_parts(results):
+    """Held-out runs only, for the technical report; plus a one-sentence headline."""
+    hold = [r for r in results if r["split"].startswith("holdout") and not r["dry"]]
+    head = ["| run | system | model | cases A / B | A macro-F1 | A evidence | B macro-F1 | input tokens per case A / B | seconds per case A / B | USD |",
+            "|---|---|---|---|---|---|---|---|---|---|"] + [row(r) for r in hold]
+    table = "\n".join(head) if hold else "_No held-out run recorded yet._"
+    headline = ""
+    ours = next((r for r in hold if r["system"] == "ours" and r["split"] == "holdout"), None)
+    base = next((r for r in hold if r["system"] == "baseline"), None)
+    if ours:
+        a, b = ours["score"]["tasks"]["A"], ours["score"]["tasks"]["B"]
+        headline = (f"On the 5 held-out vote dates ({a['cases']} task A and {b['cases']} task B cases), "
+                    f"{ours['model'].split('/')[-1]} with booklet-check reaches macro-F1 {a['macro_f1']:.3f} on task A "
+                    f"(evidence score {a['evidence_score']:.3f}) and {b['macro_f1']:.3f} on task B, with "
+                    f"{ours['mean_per_case']['A']['input_tokens']:,.0f} input tokens per task A case.")
+        if base:
+            pair = next((r for r in hold if r["system"] == "ours" and r["split"] == base["split"]), None)
+            if pair:
+                ba, pa = base["score"]["tasks"]["A"], pair["score"]["tasks"]["A"]
+                headline += (f" On the same {ba['cases']}-case sample, the whole-booklet baseline scores "
+                             f"{ba['macro_f1']:.3f} (evidence {fmt(ba.get('evidence_score'))}) with "
+                             f"{base['mean_per_case']['A']['input_tokens']:,.0f} input tokens per case, "
+                             f"against {pa['macro_f1']:.3f} (evidence {fmt(pa.get('evidence_score'))}) with "
+                             f"{pair['mean_per_case']['A']['input_tokens']:,.0f} for ours.")
+    return table, headline
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
@@ -57,13 +90,17 @@ def main():
     results = json.loads((ROOT / "eval" / "results.json").read_text(encoding="utf-8"))
     text = render(results)
     target = ROOT / "eval" / "RESULTS.md"
+    report = ROOT / "technical_report.md"
+    table, headline = report_parts(results)
+    rep = fill(fill(report.read_text(encoding="utf-8"), "RESULTS", table), "HEADLINE", headline or "_pending_")
     if args.check:
-        if target.read_text(encoding="utf-8") != text:
-            sys.exit("eval/RESULTS.md is out of date with eval/results.json")
-        print("RESULTS.md matches results.json")
+        if target.read_text(encoding="utf-8") != text or report.read_text(encoding="utf-8") != rep:
+            sys.exit("RESULTS.md or technical_report.md is out of date with eval/results.json")
+        print("RESULTS.md and report tables match results.json")
         return
     target.write_text(text, encoding="utf-8")
-    print(f"wrote {target}")
+    report.write_text(rep, encoding="utf-8")
+    print(f"wrote {target} and report tables")
 
 
 if __name__ == "__main__":

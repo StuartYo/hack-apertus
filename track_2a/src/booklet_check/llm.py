@@ -124,20 +124,20 @@ class Apertus:
         payload = {"model": self.model, "messages": messages, "temperature": 0, "max_tokens": max_tokens}
         t0 = time.time()
         last = None
-        for attempt in range(5):
+        for attempt in range(7):
             try:
                 out = self._request("/chat/completions", payload)
                 break
             except urllib.error.HTTPError as e:
                 last = e
                 if e.code in (429, 500, 502, 503, 504):
-                    time.sleep(2 ** attempt * 2)
+                    time.sleep(min(2 ** attempt * 2, 60))
                     continue
                 body = e.read().decode(errors="replace")[:300]
                 raise RuntimeError(f"HTTP {e.code}: {body}") from e
             except (urllib.error.URLError, TimeoutError) as e:
                 last = e
-                time.sleep(2 ** attempt * 2)
+                time.sleep(min(2 ** attempt * 2, 60))
         else:
             raise RuntimeError(f"endpoint failed after retries: {last}")
         ms = int((time.time() - t0) * 1000)
