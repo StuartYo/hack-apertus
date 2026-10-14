@@ -21,7 +21,7 @@ themselves, with the page they were cut from, so a quote can never be invented a
 is always right.
 
 <!-- HEADLINE:START -->
-On the 5 held-out vote dates (389 task A and 389 task B cases), apertus-v1.5-8b with booklet-check reaches macro-F1 0.895 on task A (evidence score 0.804) and 0.949 on task B, with 812 input tokens per task A case. On the same 60-case sample, the whole-booklet baseline scores 0.737 (evidence 0.275) with 38,574 input tokens per case, against 0.917 (evidence 0.900) with 821 for ours. In 18 of those 60 baseline cases the booklet did not fit the context and was cut at 180,000 characters.
+On the 5 held-out vote dates (389 task A and 389 task B cases), apertus-v1.5-8b with booklet-check reaches macro-F1 0.895 on task A (evidence score 0.804) and 0.949 on task B, with 812 input tokens per task A case. On the same sample of 60 task A cases, the whole-booklet baseline scores 0.737 (evidence 0.275) with 38,574 input tokens per case, against 0.917 (evidence 0.900) with 821 for ours. In 18 of those 60 baseline cases the booklet did not fit the context and was cut at 180,000 characters.
 <!-- HEADLINE:END -->
 
 ## 2. Architecture
@@ -29,7 +29,7 @@ On the 5 held-out vote dates (389 task A and 389 task B cases), apertus-v1.5-8b 
 ```
 cases.jsonl ──► booklet PDF ──► pypdf text per page ──► ~500-char verbatim chunks
                                                          │
-claim ──► cue (committee / council / voting text / summary)│
+claim ──► cue (committee / council / voting text / summary)
       ──► MiniLM embedding (ONNX, CPU) ─┐                 ▼
       ──► BM25 (numbers, names) ────────┼──► hybrid rank + section boost + vote-section boost
                                         │                 │
@@ -41,9 +41,10 @@ claim ──► cue (committee / council / voting text / summary)│
 
 - `src/booklet_check/pdf_index.py`: page extraction (pypdf), chunking along line breaks;
   every chunk is a contiguous slice of one page, so evidence page numbers are exact.
-- `src/booklet_check/retrieve.py`: hybrid ranking. Score = cosine (multilingual
-  MiniLM) + 0.35 x normalised BM25 + 0.08 if the page belongs to the vote named in the case
-  + 0.3 if the page is in the section the claim names. Section tags come from page headers
+- `src/booklet_check/retrieve.py`: hybrid ranking. The score of a chunk is its cosine
+  similarity (multilingual MiniLM), plus 0.35 times its normalised BM25 score, plus 0.08 if
+  its page belongs to the vote named in the case, plus 0.3 if its page is in the section the
+  claim names. Section tags come from page headers
   ("Argumente Komitee", "Arguments du Conseil fédéral", "Testo in votazione", ...), in all
   three languages and in both booklet layouts used since 2020.
 - `src/booklet_check/pipeline.py`: prompt, label parsing, evidence. Task B uses the same
@@ -115,6 +116,21 @@ held-out set; our system was run on the same sample and on the full held-out set
 | `holdout60-baseline-8b` | baseline | apertus-v1.5-8b | 60 / 60 | 0.737 | 0.275 | 0.967 | 38,574 / 2,096 | 14.0 / 5.8 | 0.2451 |
 | `holdout60-ours-8b` | ours | apertus-v1.5-8b | 60 / 60 | 0.917 | 0.900 | 0.950 | 821 / 830 | 10.1 / 6.3 | 0.0100 |
 <!-- RESULTS:END -->
+
+Held-out macro-F1 of `holdout-ours-8b` by language pair (booklet or passage language, then
+claim language):
+
+<!-- LANG:START -->
+| pair | de->de | de->fr | de->it | fr->de | fr->fr | fr->it | it->de | it->fr | it->it |
+|---|---|---|---|---|---|---|---|---|---|
+| task A | 0.97 (n=34) | 0.72 (n=36) | 0.72 (n=40) | 1.00 (n=55) | 0.91 (n=37) | 0.91 (n=50) | 0.80 (n=47) | 0.98 (n=37) | 0.98 (n=53) |
+| task B | 0.87 (n=34) | 0.88 (n=36) | 0.88 (n=40) | 1.00 (n=55) | 1.00 (n=37) | 0.98 (n=50) | 0.94 (n=47) | 1.00 (n=37) | 0.93 (n=53) |
+<!-- LANG:END -->
+
+Development choices, all on development dates only (full list in `eval/RESULTS.md`): showing
+Apertus 4 instead of 8 chunks cost 0.013 macro-F1 on a 150-case sample and saved 45% of the
+input tokens, so 4 was kept; the section prior raised the share of cases whose five evidence
+chunks contain the gold passage, without any model call.
 
 ## 6. Limitations
 

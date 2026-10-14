@@ -78,7 +78,7 @@ def report_parts(results):
             pair = next((r for r in hold if r["system"] == "ours" and r["split"] == base["split"]), None)
             if pair:
                 ba, pa = base["score"]["tasks"]["A"], pair["score"]["tasks"]["A"]
-                headline += (f" On the same {ba['cases']}-case sample, the whole-booklet baseline scores "
+                headline += (f" On the same sample of {ba['cases']} task A cases, the whole-booklet baseline scores "
                              f"{ba['macro_f1']:.3f} (evidence {fmt(ba.get('evidence_score'))}) with "
                              f"{base['mean_per_case']['A']['input_tokens']:,.0f} input tokens per case, "
                              f"against {pa['macro_f1']:.3f} (evidence {fmt(pa.get('evidence_score'))}) with "
@@ -87,6 +87,20 @@ def report_parts(results):
                     headline += (f" In {base['truncated_cases']} of those {ba['cases']} baseline cases the booklet did "
                                  f"not fit the context and was cut at 180,000 characters.")
     return table, headline
+
+
+def lang_table(results):
+    r = next((r for r in results if r["tag"] == "holdout-ours-8b"), None)
+    if not r:
+        return "_pending_"
+    langs = r["score"]["languages"]
+    pairs = sorted({k.split(" ", 1)[1] for k in langs})
+    lines = ["| pair | " + " | ".join(pairs) + " |", "|---|" + "---|" * len(pairs)]
+    for task in ("A", "B"):
+        cells = [f"{langs[f'{task} {p}']['macro_f1']:.2f} (n={langs[f'{task} {p}']['cases']})"
+                 if f"{task} {p}" in langs else "" for p in pairs]
+        lines.append(f"| task {task} | " + " | ".join(cells) + " |")
+    return "\n".join(lines)
 
 
 def main():
@@ -99,6 +113,7 @@ def main():
     report = ROOT / "technical_report.md"
     table, headline = report_parts(results)
     rep = fill(fill(report.read_text(encoding="utf-8"), "RESULTS", table), "HEADLINE", headline or "_pending_")
+    rep = fill(rep, "LANG", lang_table(results))
     if args.check:
         if target.read_text(encoding="utf-8") != text or report.read_text(encoding="utf-8") != rep:
             sys.exit("RESULTS.md or technical_report.md is out of date with eval/results.json")
