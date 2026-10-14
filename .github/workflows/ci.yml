@@ -26,7 +26,7 @@ jobs:
         run: make run 2> run.log; cat run.log
       - name: Check output contract and that the embedding model loaded offline
         run: |
-          ! grep -q "embedding model unavailable" run.log
+          if grep -q "embedding model unavailable" run.log; then echo "embedding model did not load"; exit 1; fi
           grep -q "DRY MODE" run.log
           python - <<'PY'
           import json
@@ -44,5 +44,5 @@ jobs:
           docker run --rm --network none -v "$PWD/data/examples:/data:ro" -v "$PWD/output:/output" \
             booklet-check:latest --input /data/cases.jsonl --output /output/offline.jsonl 2> offline.log
           cat offline.log
-          ! grep -q "embedding model unavailable" offline.log
+          if grep -q "embedding model unavailable" offline.log; then echo "embedding model did not load offline"; exit 1; fi
           test "$(wc -l < output/offline.jsonl)" -eq 2
